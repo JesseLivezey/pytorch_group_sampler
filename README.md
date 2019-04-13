@@ -1,2 +1,2 @@
 # pytorch_group_sampler
-PyTorch sampler for unitary, orthogonal, and special orthogonal groups
+PyTorch sampler for orthogonal and special orthogonal groups
