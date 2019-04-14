@@ -31,7 +31,6 @@ class TestSpecialOrthoGroup(object):
 
         # Test that determinants are always +1
         dets = [np.linalg.det(x) for x in xs]
-        print(dets)
         assert_allclose(dets, [1.]*30, atol=5e-6)
 
         # Test that these are orthogonal matrices

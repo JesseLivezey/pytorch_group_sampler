@@ -90,12 +90,12 @@ def special_ortho_group_rvs(dim, size=1, device='cuda:0', dtype=torch.float32,
 
     H = torch.eye(dim, device=device, dtype=dtype)
     D = torch.empty(dim, device=device, dtype=dtype)
-    for n in range(dim):
+    for n in range(dim-1):
         x = torch.randn(dim-n, device=device, dtype=dtype)
         norm2 = torch.dot(x, x)
         x0 = x[0].clone()
         D[n] = torch.sign(x[0]) if x[0] != 0 else 1
-        x[0] = x[0] + (D[n] * torch.sqrt(norm2))
+        x[0] += D[n] * torch.sqrt(norm2)
         x /= torch.sqrt((norm2 - x0**2 + x[0]**2) / 2.)
         # Householder transformation
         x_un = torch.unsqueeze(x, 0)
