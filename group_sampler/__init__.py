@@ -48,10 +48,7 @@ def ortho_group_rvs(dim, size=1, output_numpy=False,
         x /= torch.sqrt((norm2 - x0**2 + x[0]**2) / 2.)
         # Householder transformation
         x_un = torch.unsqueeze(x, 0)
-        Hx = -D*(torch.eye(dim-n, device=device, dtype=dtype) - x_un * x_un.t())
-        mat = torch.eye(dim, device=device, dtype=dtype)
-        mat[n:, n:] = Hx
-        H = torch.mm(H, mat)
+        H[:, n:] = -D * (H[:, n:] - torch.mm(H[:, n:], x_un.t()) * x_un)
     if output_numpy:
         H = H.detach().cpu().numpy()
     return H
@@ -99,10 +96,7 @@ def special_ortho_group_rvs(dim, size=1, device='cuda:0', dtype=torch.float32,
         x /= torch.sqrt((norm2 - x0**2 + x[0]**2) / 2.)
         # Householder transformation
         x_un = torch.unsqueeze(x, 0)
-        Hx = torch.eye(dim-n, device=device, dtype=dtype) - x_un * x_un.t()
-        mat = torch.eye(dim, device=device, dtype=dtype)
-        mat[n:, n:] = Hx
-        H = torch.mm(H, mat)
+        H[:, n:] -= torch.mm(H[:, n:], x_un.t()) * x_un
     D[-1] = (-1)**(dim - 1) * D[:-1].prod()
     # Equivalent to np.dot(np.diag(D), H) but faster, apparently
     H = (D * H.t()).t()
